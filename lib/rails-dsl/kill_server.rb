@@ -34,7 +34,7 @@ module Rails
 
         def kill?
 
-          unless %W[ -k --kill ].select{|sym| ARGV.include?(sym) }.empty?
+          unless %W[ -k --kill kill ].select{|sym| ARGV.include?(sym) }.empty?
 
             previous_stderr, $stderr = $stderr, StringIO.new
             previous_stdout, $stdout = $stdout, StringIO.new
@@ -45,15 +45,16 @@ module Rails
               $stdout= previous_stdout
 
               Rails::Server.new.tap { |server|
+                
                 # We need to require application after the server sets environment,
                 # otherwise the --environment option given to the server won't propagate.
                 require APP_PATH
                 Dir.chdir(Rails.application.root)
                 Commands::Helpers.kill(server.options[:pid])
-
+                
               }
 
-              # Rails::Server
+              Process.exit!
 
             end
 

@@ -13,7 +13,7 @@ like:
 * "2011-03-12" to Date obj
 * etc etc etc
 
-if you call rails with --kill or -k command from now on, it will kill the application by it's pid file
+if you call rails with kill / k command from now on, it will kill the application by it's pid file
 
-    $ rails --kill
+    $ rails kill
     #> At pid: 24922 the app is killed with pidfile: /home/asdf/rails_app/tmp/pids/server.pid
