@@ -1,32 +1,44 @@
-require 'str2duck'
+begin
 
-module RailsDuckParams
+  require 'str2duck'
+  require 'action_controller'
 
-  def params_duck
+  module Rails
+    module DSL
 
-    @duck_params_origin ||= params.dup
-    @duck_params_cache  ||= nil
+      module ActionControllerEXT
 
-    if params == @duck_params_origin && !@duck_params_cache.nil?
+        def params_duck
 
-      return @duck_params_cache
+          @duck_params_origin ||= params.dup
+          @duck_params_cache  ||= nil
 
-    else
+          if params == @duck_params_origin && !@duck_params_cache.nil?
 
-      @duck_params_cache= params.dup
-      @duck_params_origin= params.dup
+            return @duck_params_cache
 
-      params.each do |k,v|
-        @duck_params_cache[k]=( ::Str2Duck.parse(v) ) if v.class <= String
+          else
+
+            @duck_params_cache= params.dup
+            @duck_params_origin= params.dup
+
+            params.each do |k,v|
+              @duck_params_cache[k]=( ::Str2Duck.parse(v) ) if v.class <= String
+            end
+
+            return @duck_params_cache
+
+          end
+
+        end
+        alias duck_params params_duck
+
       end
 
-      return @duck_params_cache
-
     end
-
   end
-  alias duck_params params_duck
 
+  ActionController::Base.__send__ :include, Rails::DSL::ActionControllerEXT
+
+rescue LoadError
 end
-
-ActionController::Base.__send__ :include, RailsDuckParams
