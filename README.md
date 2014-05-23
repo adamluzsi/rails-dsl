@@ -17,3 +17,33 @@ if you call rails with kill / k command from now on, it will kill the applicatio
 
     $ rails kill
     #> At pid: 24922 the app is killed with pidfile: /home/asdf/rails_app/tmp/pids/server.pid
+
+
+### Routing
+
+mount controller
+
+```ruby
+
+    #> controller
+    class PagesController < ApplicationController
+
+      def test
+
+      end
+
+    end
+
+    #> routes.rb
+
+    HeartShoot::Application.routes.draw do
+
+      mount_controller PagesController
+      #> or
+      mount_controller :pages
+
+    end
+
+    #> mount not private methods from PagesController
+
+```
