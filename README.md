@@ -67,11 +67,19 @@ you can use the following options (name: [aliases])
 
 ##### As API behavor
 
-in this mount options,
+in this mount options
+
 * the methods return value will be sent back parsed object to the requester
 * you dont have to set up render options
+
 * arguments will be parsed into route :params so the othere side can cache based on url
-** the method actualy receive the passed parameter so you can use like in the example
+    * the method actualy receive the passed parameter so you can use like in the example
+
+* by extend the method name you can set the methods REST method by the followind endings:
+    * _get
+    * _post
+    * _put
+    * _delete
 
 ```ruby
 
@@ -89,21 +97,26 @@ in this mount options,
         {hello: 'hello' }
       end
 
+      def test2_post
+        {hello: 'blabla' }
+      end
+      #> POST /test.:format -> default json
+
     end
 
     #> routes.rb
 
     HeartShoot::Application.routes.draw do
 
-      mount_controller_api :pages
-
-      # or
-      mount_as_api :pages
       # you can still use the Class name too
+      mount_controller_as_api :pages
 
-      # or
-      #> if you prefer the JSON output as default
-      mount_as_api :pages, default: { format: :json }
+      # or as alias
+      mount_api :pages
+
+      # or you can use well defaults key to set up parameters
+      # if you prefer the XML as default over JSON output
+      mount_api :pages, defaults: { format: :xml }
 
     end
 

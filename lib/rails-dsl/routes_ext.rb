@@ -35,10 +35,12 @@ module Rails
             # search for alt keys
             {
 
-                scope:    [:s,:namespace,:path],
+                urls:     [:p,:paths,:url,:u],
+                scope:    [:s],
                 resource: [:r,:class],
                 defaults: [:d,:default],
                 params:   [:url_params],
+                ne:       [:exception,:exceptions,:ex],
 
                 get:      [:read],
                 post:     [:create],
@@ -54,14 +56,25 @@ module Rails
             # set defaults
             opts[:defaults] ||= {}
             opts[:resource] ||= args.select{|e|([::Class,::String,::Symbol].include?(e.class))}[0]
-            opts[:params] ||= args.select{|e|(e.class <= ::Array)}
+
+            opts[:params]   ||= args.select{|e|(e.class <= ::Array)}
+            opts[:params]   ||= []
+
+            opts[:urls]     ||= {}
+            opts[:ne]       ||= []
+
+            opts[:ne].map!{|method_name_to_sym| method_name_to_sym.to_s.to_sym }
 
             [:get,:post,:put,:delete,:options].each{|sym| opts[sym] ||= [] ; opts[sym]= [opts[sym]]  unless opts[sym].class <= ::Array }
+
             unless opts[:params].class <= ::Array
               raise(ArgumentError,"invalid argument for url params: #{opts[:params]}.\nmust be something like [:method_name,[:url_params]] || [:method_name,:url_params]")
             end
 
-            opts[:params] ||= []
+            unless opts[:urls].class <= ::Hash
+              raise(ArgumentError,"invalid argument for urls group: #{opts[:urls]}.\nmust be something like {method_name: '/path'}")
+            end
+
             unless opts[:params].empty?
 
               opts[:params].each{|ary| raise unless ary.size == 2 }
@@ -69,13 +82,32 @@ module Rails
 
             end
 
-
             # validations
             raise(ArgumentError,"Invalid defaults given") unless opts[:defaults].class <= ::Hash
 
             opts[:short_class_name]= opts[:resource].to_s.underscore.split('_')[0]
             opts[:class] = ( opts[:resource].class == Class ? opts[:resource] : opts[:resource].to_s.concat('_controller').classify.constantize )
-            opts[:pim] = opts[:class].public_instance_methods(false).select{|e|(e.to_s.last != '?')}-[:default_format_xml, :default_format_json]
+            opts[:pim] = opts[:class].public_instance_methods(false).select{|e|(e.to_s.last != '?')} - opts[:ne]
+
+            # make setup able method configs
+            opts[:pim].each do |sym|
+
+              sym_str= sym.to_s
+              {
+                  get:    /_get$/,
+                  post:   /_post$/,
+                  put:    /_put$/,
+                  delete: /_delete$/
+              }.each do |type,regex|
+
+                if sym_str =~ regex
+                  opts[type].push(sym)
+                  opts[:urls][sym] ||= "/#{sym_str.gsub(regex,"")}"
+                end
+
+              end
+
+            end
 
             return opts
 
@@ -87,7 +119,12 @@ module Rails
 
       def mount_controller *args
 
-        opts= Rails::DSL::ActionDispatchRouteEXT::Helpers.process_args(*args)
+        opts= nil
+        if args.size == 1 && args[0].class <= ::Hash
+          opts= args[0]
+        else
+          opts= Rails::DSL::ActionDispatchRouteEXT::Helpers.process_args(*args)
+        end
 
         # helper lambdas
 
@@ -103,11 +140,11 @@ module Rails
             end
             method_to_use ||= :get
 
-            puts "/#{method_name}#{Rails::DSL::ActionDispatchRouteEXT::Helpers.array_to_url_params(opts[:params],method_name)}"
+            url_path = opts[:urls][method_name].nil? ? "/#{method_name}" : opts[:urls][method_name].to_s
 
             self.__send__ method_to_use,
-                          "/#{method_name}#{Rails::DSL::ActionDispatchRouteEXT::Helpers.array_to_url_params(opts[:params],method_name)}",
-                          {to: "#{opts[:short_class_name]}##{method_name}"}.merge({defaults: opts[:defaults]})
+                          "#{url_path}#{Rails::DSL::ActionDispatchRouteEXT::Helpers.array_to_url_params(opts[:params],method_name)}",
+                          {to: "#{opts[:short_class_name]}##{method_name}", defaults: opts[:defaults].dup }
 
           end
 
@@ -126,7 +163,8 @@ module Rails
 
       end
 
-      def mount_controller_api *args
+      def mount_controller_as_api *args
+
         opts= Rails::DSL::ActionDispatchRouteEXT::Helpers.process_args(*args)
         conv_params= []
 
@@ -144,12 +182,15 @@ module Rails
             end
 
             define_method(sym) do
+
               value= var.bind(self).call(*parameters.map{ |param_key| params[param_key] })
+
               respond_to do |format|
                 format.html
                 format.json { render json:  value }
                 format.xml  { render xml:   value }
               end
+
             end
 
           end
@@ -157,12 +198,12 @@ module Rails
         end
 
         # mount controller methods
-        mount_controller *args,*conv_params
+        mount_controller *args,*conv_params, { defaults: {format: :json} }
 
         return nil
 
       end
-      alias mount_as_api mount_controller_api
+      alias mount_api mount_controller_as_api
 
     end
   end
