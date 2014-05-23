@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Adam Luzsi"]
   spec.email         = ["adamluzsi@gmail.com"]
 
-  spec.description   = %q{ Provide Rails with some extra helpers, for example for to ApplicationController a 'duck_params' that parse string values into the right_obj like Fixnum or Integer or json to hash  }
-  spec.summary       = %q{ provide a duck_params/params_duck call in the ApplicationControllers }
+  spec.description   = %q{ Provide Rails with some extra tools, please read README.md on git }
+  spec.summary       = %q{ Provide Rails with some extra tools for easier life }
 
   spec.homepage      = "https://github.com/adamluzsi/#{__FILE__.split(File::Separator).last.split('.').first}"
   spec.files         = `git ls-files`.split($/)
