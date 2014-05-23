@@ -21,7 +21,22 @@ if you call rails with 'kill' / 'k' command from now on, it will kill the applic
 
 ### Routing
 
-mount controller
+#### mount controller
+
+* mount a controller public methods as routes.
+* the method name will be the path
+
+you can use the following options (name: [aliases])
+(the you can specify method(s) rest call type)
+
+* scope:    [:s,:namespace,:path]
+* resource: [:r,:class]
+* defaults: [:d,:default]
+* get:      [:read]
+* post:     [:create]
+* put:      [:update]
+* delete:   [:delete]
+
 
 ```ruby
 
