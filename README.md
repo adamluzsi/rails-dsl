@@ -96,15 +96,15 @@ in this mount options
         {hello: hello }
       end
 
-      #> this generate /test2/:hello.:format  path
+      #> this generate /test2.:format  path
       def test2
         {hello: 'hello' }
       end
 
+      #> POST /test.:format -> default json
       def test2_post
         {hello: 'blabla' }
       end
-      #> POST /test.:format -> default json
 
     end
 
