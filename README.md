@@ -3,6 +3,8 @@ rails-dsl
 
 Provide Rails with some extra helpers,
 
+### Controller
+
 For example for to ActionController::Base a 'duck_params' that parse string values into the right obj,
 like:
 
@@ -12,6 +14,8 @@ like:
 * "123.123" to Float obj
 * "2011-03-12" to Date obj
 * etc etc etc
+
+### Terminal
 
 if you call rails with 'kill' / 'k' command from now on, it will kill the application by it's pid file
 
