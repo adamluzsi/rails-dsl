@@ -34,7 +34,7 @@ module Rails
 
         def kill?
 
-          unless %W[ -k --kill kill ].select{|sym| ARGV.include?(sym) }.empty?
+          unless %W[ --kill kill k ].select{|sym| ARGV.include?(sym) }.empty?
 
             previous_stderr, $stderr = $stderr, StringIO.new
             previous_stdout, $stdout = $stdout, StringIO.new
