@@ -138,7 +138,8 @@ module Rails
                 method_to_use ||= pre_spec_method_call_type
               end
             end
-            method_to_use ||= :get
+
+            method_to_use ||= :match
 
             url_path = opts[:urls][method_name].nil? ? "/#{method_name}" : opts[:urls][method_name].to_s
 
