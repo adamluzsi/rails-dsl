@@ -1,6 +1,5 @@
 module Rails
   module DSL
-
     module ActionDispatchRouteEXT
 
       module Helpers
@@ -113,7 +112,6 @@ module Rails
 
           end
 
-
         end
       end
 
@@ -206,12 +204,17 @@ module Rails
       end
       alias mount_rendered_controller mount_controller_with_render
 
+      def get_controller_names *path
+        path += ['app','controllers','*_controller.{ru,rb}'] if path.empty?
+        return Dir.glob(::Rails.root.join(*path)).map{|p| p.split(File::Separator).last.split('_controller')[0].to_sym }
+      end
+
       def mount_controllers
-        Dir.glob( Rails.root.join('app','controllers','*_controller.{ru,rb}') ).map!{|p| p.split(File::Separator).last.split('_controller')[0] }.each{ |cn| mount_controller cn.to_sym }
+        get_controller_names.each { |cn| mount_controller(cn) }
       end
 
       def mount_controllers_with_render
-        Dir.glob( Rails.root.join('app','controllers','*_controller.{ru,rb}') ).map!{|p| p.split(File::Separator).last.split('_controller')[0] }.each{ |cn| mount_controller_with_render cn.to_sym }
+        get_controller_names.each{ |cn| mount_controller_with_render(cn) }
       end
       alias mount_rendered_controllers mount_controllers_with_render
 
