@@ -164,7 +164,7 @@ module Rails
 
       end
 
-      def mount_controller_as_api *args
+      def mount_controller_with_render *args
 
         opts= Rails::DSL::ActionDispatchRouteEXT::Helpers.process_args(*args)
         conv_params= []
@@ -199,16 +199,21 @@ module Rails
         end
 
         # mount controller methods
-        mount_controller *args,*conv_params, { defaults: {format: :json} }
+        mount_controller *args,*conv_params #, { defaults: {format: :json} }
 
         return nil
 
       end
-      alias mount_api mount_controller_as_api
+      alias mount_rendered_controller mount_controller_with_render
 
       def mount_controllers
         Dir.glob( Rails.root.join('app','controllers','*_controller.{ru,rb}') ).map!{|p| p.split(File::Separator).last.split('_controller')[0] }.each{ |cn| mount_controller cn.to_sym }
       end
+
+      def mount_controllers_with_render
+        Dir.glob( Rails.root.join('app','controllers','*_controller.{ru,rb}') ).map!{|p| p.split(File::Separator).last.split('_controller')[0] }.each{ |cn| mount_controller_with_render cn.to_sym }
+      end
+      alias mount_rendered_controllers mount_controllers_with_render
 
     end
   end
