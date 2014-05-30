@@ -113,17 +113,16 @@ in this mount options
     HeartShoot::Application.routes.draw do
 
       # you can still use the Class name too
-      mount_controller_as_api :pages
+      mount_controller_with_render :pages
 
       # or as alias
-      mount_api :pages
+      mount_rendered_controllers :pages
 
       # or you can use well defaults key to set up parameters
       # if you prefer the XML as default over JSON output
-      mount_api :pages, defaults: { format: :xml }
+      mount_rendered_controllers :pages, defaults: { format: :xml }
 
     end
 
-    #> mount not private methods as apit from PagesController
-
 ```
+
