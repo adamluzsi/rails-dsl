@@ -206,6 +206,10 @@ module Rails
       end
       alias mount_api mount_controller_as_api
 
+      def mount_controllers
+        Dir.glob( Rails.root.join('app','controllers','*_controller.{ru,rb}') ).map!{|p| p.split(File::Separator).last.split('_controller')[0] }.each{ |cn| mount_controller cn.to_sym }
+      end
+
     end
   end
 end
