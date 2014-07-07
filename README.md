@@ -3,18 +3,6 @@ rails-dsl
 
 Provide Rails with some extra helpers,
 
-### Controller
-
-For example for to ActionController::Base a 'duck_params' that parse string values into the right obj,
-like:
-
-* "123" to Fixnum
-* {"hello":"world"} json into Hash
-* "Fri, 25 Jan 2013 20:02:15 +0100" to DateTime obj
-* "123.123" to Float obj
-* "2011-03-12" to Date obj
-* etc etc etc
-
 ### Terminal
 
 if you call rails with 'kill' / 'k' command from now on, it will kill the application by it's pid file
@@ -126,3 +114,7 @@ in this mount options
 
 ```
 
+### Rails console Bug Fix
+
+for fixing the annoying error with the rails console,
+i added deppendency for the rb-readline gem, witch implement the missing error

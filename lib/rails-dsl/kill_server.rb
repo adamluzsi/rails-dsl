@@ -31,7 +31,6 @@ module Rails
       end
 
       module EXT
-
         def kill?
 
           unless %W[ --kill kill k ].select{|sym| ARGV.include?(sym) }.empty?
@@ -62,7 +61,6 @@ module Rails
           end
 
         end
-
       end
     end
 
@@ -70,5 +68,4 @@ module Rails
 
   end
 end
-
-Rails::DSL.kill?
+Rails::DSL.kill? #> will kill if rails was started with kill command

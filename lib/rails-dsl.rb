@@ -1,3 +1,4 @@
 require 'rails'
-
-Dir.glob(File.join(File.dirname(__FILE__),'rails-dsl','**','*.{rb,ru}')).each{ |p| require(p) }
+require 'rails-dsl/kill_server'
+require 'rails-dsl/lib_mounter'
+require 'rails-dsl/routes_ext'

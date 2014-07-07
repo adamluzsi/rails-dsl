@@ -1,5 +1,4 @@
 # coding: utf-8
-
 Gem::Specification.new do |spec|
 
   spec.name          = "rails-dsl"
@@ -21,5 +20,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "str2duck", ">= 1.6.0"
   spec.add_dependency "rails",    ">= 3.0.0"
+
+  #> fix the annoying readline bug with rails console
+  spec.add_dependency "rb-readline", '~> 0.4.2'
 
 end
