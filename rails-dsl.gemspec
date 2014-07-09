@@ -22,6 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails",    ">= 3.0.0"
 
   #> fix the annoying readline bug with rails console
-  spec.add_dependency "rb-readline", '~> 0.4.2'
+  # spec.add_dependency "rb-readline", '~> 0.4.2'
 
 end
