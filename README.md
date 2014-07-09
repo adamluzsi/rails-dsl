@@ -20,18 +20,6 @@ if you call rails with 'kill' / 'k' command from now on, it will kill the applic
 * mount a controller public methods as routes.
 * the method name will be the path
 
-you can use the following options (name: [aliases])
-(the you can specify method(s) rest call type)
-
-* scope:    [:s,:namespace,:path]
-* resource: [:r,:class]
-* defaults: [:d,:default]
-* get:      [:read]
-* post:     [:create]
-* put:      [:update]
-* delete:   [:delete]
-
-
 ```ruby
 
     #> controller
@@ -45,33 +33,23 @@ you can use the following options (name: [aliases])
 
     #> routes.rb
 
-    HeartShoot::Application.routes.draw do
-
-      mount_controller PagesController
-      #> or
-      mount_controller :pages
-
+    RailsApp::Application.routes.draw do
+      mount_by class: :pages || PageController
     end
 
-    #> mount not private methods from PagesController
 
 ```
 
 ##### As API behavor
 
-in this mount options
-
-* the methods return value will be sent back parsed object to the requester
-* you dont have to set up render options
-
 * arguments will be parsed into route :params so the othere side can cache based on url
-    * the method actualy receive the passed parameter so you can use like in the example
+    * the method actually receive the passed parameter so you can use like in the example
 
-* by extend the method name you can set the methods REST method by the followind endings:
-    * _get
-    * _post
-    * _put
-    * _delete
+* by extend the method name you can set the methods REST method by the followind endings or beginnings:
+    * _get || get_
+    * _post || post_
+    * _put || put_
+    * _delete || delete_
 
 ```ruby
 
@@ -97,18 +75,13 @@ in this mount options
     end
 
     #> routes.rb
-
-    HeartShoot::Application.routes.draw do
+    RailsApp::Application.routes.draw do
 
       # you can still use the Class name too
-      mount_controller_with_render :pages
+      mount_by class: :pages
 
-      # or as alias
-      mount_rendered_controllers :pages
-
-      # or you can use well defaults key to set up parameters
-      # if you prefer the XML as default over JSON output
-      mount_rendered_controllers :pages, defaults: { format: :xml }
+      # defaults can be passed 
+      mount_by class: :pages, defaults: { format: :xml }
 
     end
 
