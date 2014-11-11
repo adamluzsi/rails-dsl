@@ -86,8 +86,3 @@ if you call rails with 'kill' / 'k' command from now on, it will kill the applic
     end
 
 ```
-
-### Rails console Bug Fix
-
-for fixing the annoying error with the rails console,
-i added deppendency for the rb-readline gem, witch implement the missing error
